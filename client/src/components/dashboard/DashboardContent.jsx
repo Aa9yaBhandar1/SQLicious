@@ -1,16 +1,14 @@
 import {useState, useEffect} from "react";
-import ManageMenu from "../MenuPage/ManageMenu";
 import RestaurantContent from "./RestaurantContent";
 import CustomerContent from "./CustomerContent";
-const  DashboardContent= () => {
+import { getUserFromToken } from "../../utils/tokenUtils";
 
+const  DashboardContent= () => {
   const [user, setUser] = useState(null);
 
   useEffect(()=> {
-    const savedUser = localStorage.getItem("user") || "{}";
-    if(savedUser){
-      setUser(JSON.parse(savedUser));
-    }
+    const savedUser = getUserFromToken() || "{}";
+      setUser(savedUser);
   }, []);
 
   if(!user) 
