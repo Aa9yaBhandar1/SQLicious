@@ -1,12 +1,13 @@
 import {useState, useEffect} from "react";
+import { getUserFromToken } from "../../utils/tokenUtils";
 
 const DashboardHeader = () => {
     const [user, setUser] = useState(null);
   
     useEffect(()=> {
-      const savedUser = localStorage.getItem("user") || "{}";
+      const savedUser = getUserFromToken() || "{}";
       if(savedUser){
-        setUser(JSON.parse(savedUser));
+        setUser(savedUser);
       }
     }, []);
     if(!user) return <div className='p-10 text-[#BEB7A4'>Loading Profile...</div>

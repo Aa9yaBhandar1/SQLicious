@@ -33,13 +33,13 @@ const Navbar = () => {
             <div className="hidden md:flex gap-6 text-sm font-medium text-gray-600">
               {isRestaurant ? (
                 <>
-                  <Link to="/manage-menu" className="hover:text-[#FF7F11]">My Menu</Link>
+                  <Link to="/restaurant" className="hover:text-[#FF7F11]">My Menu</Link>
                   <Link to="/orders" className="hover:text-[#FF7F11]">Orders Received</Link>
                   <Link to="/analytics" className="hover:text-[#FF7F11]">Analytics</Link>
                 </>
               ) : (
                 <>
-                  <Link to="/restaurants" className="hover:text-[#FF7F11]">Explore</Link>
+                  <Link to="/restaurant" className="hover:text-[#FF7F11]">Explore</Link>
                   <Link to="/orders" className="hover:text-[#FF7F11]">My Orders</Link>
                   <Link to="/cart" className="flex items-center gap-1 text-[#FF7F11]">
                     <span>🛒</span> <span className="bg-[#CBE896] px-2 py-0.5 rounded-full text-xs text-black">3</span>

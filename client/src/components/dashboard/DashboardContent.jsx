@@ -20,9 +20,6 @@ const  DashboardContent= () => {
 
 
   const isRestaurant = user?.role === "restaurant";
-  const restaurant_id = user?.restaurant_id;
-  console.log(restaurant_id);
-
 
   return (
      <div className="p-10 max-w-7xl mx-auto">

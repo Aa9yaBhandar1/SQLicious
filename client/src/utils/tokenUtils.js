@@ -16,6 +16,7 @@ export const getUserFromToken = () => {
         return {
             user_id: decoded.user_id,
             role: decoded.role,
+            name: decoded.name,
             restaurant_id: decoded.restaurant_id, 
         };
     } catch (error) {

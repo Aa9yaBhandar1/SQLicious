@@ -49,6 +49,7 @@ router.post("/sign-in", async(req, res)=>{
             {
                 user_id: user.user_id,
                 role:user.role,
+                name:user.name,
                 restaurant_id: user.restaurant_id
             },
             process.env.JWT_SECRET,

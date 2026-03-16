@@ -20,7 +20,6 @@ const handleSubmit = async (e) => {
     });
 
     localStorage.setItem("token", data.token);
-    // localStorage.setItem("user", JSON.stringify(data.user));
     navigate("/dashboard");
   } catch (err) {
     console.error(err.message);
@@ -52,7 +51,7 @@ const handleSubmit = async (e) => {
           className="w-full mb-4 p-2 border rounded"
         />
 
-        <button className="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700">
+        <button className="bg-orange-600 text-white w-full py-2 rounded hover:bg-orange-700">
           sign-in
         </button>
       </form>
