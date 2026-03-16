@@ -19,9 +19,27 @@ const updateRestaurantProfile = async(address, contact, name, user_id) => {
         [address, contact, name, user_id]
     );
     return result.rows[0];
+};
+
+const getAllRestaurants = async()=> {
+    const result = await pool.query(
+        `SELECT * FROM restaurants ORDER BY name`
+    );
+    return result.rows;
+}
+
+const getMenuItemsByRestaurant = async(restaurant_id)=> {
+    const result = await pool.query(
+        `SELECT * FROM menu_items 
+        WHERE restaurant_id = $1 
+        ORDER BY category`,
+        [restaurant_id]
+    );
+    return result.rows;
 }
 module.exports = { 
     createRestaurantProfile,
-    updateRestaurantProfile
-
+    updateRestaurantProfile,
+    getAllRestaurants,
+    getMenuItemsByRestaurant
  };

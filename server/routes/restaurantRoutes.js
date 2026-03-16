@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
 const userModel = require("../models/userModel");
@@ -32,6 +30,19 @@ router.post("/restaurant-profile", async (req, res) => {
         res.status(500).json({ error: "Database error", details: err.message });
     }
 });
+
+
+//Get all restaurants 
+router.get('/', async (req, res)=> {
+    try {
+        const allRestaurants = await restaurantModel.getAllRestaurants();
+        console.log(allRestaurants);
+        res.status(200).json(allRestaurants);
+    }catch(err){
+        res.status(500).json({message: "Error fetching restaurants", error: err.message})
+    }
+});
+
 
 module.exports = router;
 
