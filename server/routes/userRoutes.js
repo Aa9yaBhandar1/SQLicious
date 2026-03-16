@@ -1,14 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 require('dotenv').config();
 const pool = require("../config/db");
 
 const userModel = require("../models/userModel");
 const restaurantModel = require("../models/restaurantModel");
 const verifyToken = require("../middleware/authMiddleware");
-const authorize = require("../middleware/roleMiddleware");
 
 
 //get details 

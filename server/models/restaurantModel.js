@@ -31,8 +31,7 @@ const getAllRestaurants = async()=> {
 const getRestaurantDetail = async(user_id)=> {
     const result = await pool.query(
         `SELECT * FROM restaurants
-        WHERE user_id = $1
-        RETURNING *`,
+        WHERE user_id = $1`,
         [user_id]
     );
     return result.rows[0];

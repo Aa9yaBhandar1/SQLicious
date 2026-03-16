@@ -5,7 +5,7 @@ const RestaurantCard = ({ restaurant }) => {
   const navigate = useNavigate();
   return (
     <div 
-    onClick={()=> navigate(`/restaurant/${restaurant.restaurant_id}`)}
+    onClick={()=> navigate(`/restaurant/${restaurant.restaurant_id}/menu`)}
     className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden cursor-pointer group">
 
       {/* Image */}

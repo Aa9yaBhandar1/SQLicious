@@ -8,6 +8,7 @@ import RestaurantProfile from "./auth/RestaurantProfile";
 import ProfileSetting from "./pages/ProfileSetting";
 import {Toaster} from "react-hot-toast";
 import Restaurant from "./pages/Restaurant";
+import RestaurantMenu from "./components/MenuPage/RestaurantMenu"
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/restaurant-profile" element={<RestaurantProfile />} />
         <Route path="/profile" element={<ProfileSetting/>} />
         <Route path="/restaurant" element={<Restaurant/>} />
+        <Route path="/restaurant/:id/menu" element={<RestaurantMenu/>}/>
 
         <Route
           path="/dashboard"

@@ -1,4 +1,4 @@
-const pool = require("../db");
+const pool = require("../config/db");
 
 const getMenuByRestaurant = async (restaurant_id) => {
     const result = await pool.query(

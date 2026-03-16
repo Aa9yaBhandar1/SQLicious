@@ -6,7 +6,7 @@ const menuModel = require("../models/menuModel");
 router.get('/:id/menu', async (req, res)=> {
     try{
         const {id} = req.params;
-        const menuItems = await menuModel.getMenuItemsByRestaurant(id) 
+        const menuItems = await menuModel.getMenuByRestaurant(id) ;
         res.status(200).json(menuItems);
     }catch(err){
         res.status(500).json({message: "Error fetching menu", error: err.message})
