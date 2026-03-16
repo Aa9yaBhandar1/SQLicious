@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
 const userModel = require("../models/userModel");
-const restaurantModel = require("../models/restaurantModel");
 const verifyToken = require("../middleware/authMiddleware");
 const authorize = require("../middleware/roleMiddleware");
 
@@ -48,7 +47,9 @@ router.post("/sign-in", async(req, res)=>{
 
         const token = jwt.sign(
             {
-                user_id: user.user_id, role:user.role
+                user_id: user.user_id,
+                role:user.role,
+                restaurant_id: user.restaurant_id
             },
             process.env.JWT_SECRET,
             {expiresIn: "1h"}

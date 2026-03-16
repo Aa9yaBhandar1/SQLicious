@@ -20,7 +20,7 @@ const handleSubmit = async (e) => {
     });
 
     localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    // localStorage.setItem("user", JSON.stringify(data.user));
     navigate("/dashboard");
   } catch (err) {
     console.error(err.message);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const ManageMenu = ({ restaurantId }) => {
+const ManageMenu = ({ restaurant_id }) => {
 
   const [menu, setMenu] = useState([]);
   const [name,setName] = useState("");
@@ -9,7 +9,7 @@ const ManageMenu = ({ restaurantId }) => {
 
   const fetchMenu = async () => {
     const res = await fetch(
-      `http://localhost:5000/api/restaurant/${restaurantId}/menu`
+      `http://localhost:5000/api/restaurant/${restaurant_id}/menu`
     );
     const data = await res.json();
     setMenu(data);
@@ -22,7 +22,7 @@ const ManageMenu = ({ restaurantId }) => {
   const addItem = async () => {
 
     await fetch(
-      `http://localhost:5000/api/restaurant/${restaurantId}/menu`,
+      `http://localhost:5000/api/restaurant/${restaurant_id}/menu`,
       {
         method:"POST",
         headers:{"Content-Type":"application/json"},

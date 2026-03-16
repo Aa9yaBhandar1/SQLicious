@@ -3,10 +3,11 @@ import GeneralSettings from '../components/ProfileSetting/GeneralSetting';
 import OrderHistory from '../components/ProfileSetting/OrderHistory';
 import BusinessProfile from '../components/ProfileSetting/BusinessProfile';
 import AccountSettings from '../components/ProfileSetting/AccountSettings';
+import { getUserFromToken } from '../utils/tokenUtils';
 
 const ProfileLayout = () => {
   const [activeTab, setActiveTab] = useState("general");
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = getUserFromToken();
   const isRestaurant = user.role === "restaurant";
 
   // Sidebar Menu Configuration

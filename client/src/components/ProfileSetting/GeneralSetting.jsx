@@ -81,7 +81,6 @@ const GeneralSettings = ({ user: sessionUser }) => {
           ...formData,
         };
 
-        localStorage.setItem("user", JSON.stringify(updatedUser));
         setUserData(updatedUser);
       } else {
         toast.error("Update failed", { id: loadingToast });

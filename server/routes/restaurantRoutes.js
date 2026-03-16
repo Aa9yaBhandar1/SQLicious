@@ -1,11 +1,8 @@
 const express = require("express");
 const router = express.Router();
 require('dotenv').config();
-
-const userModel = require("../models/userModel");
 const restaurantModel = require("../models/restaurantModel");
-const verifyToken = require("../middleware/authMiddleware");
-const authorize = require("../middleware/roleMiddleware");
+
 
 
 //setup restaurant profile 
@@ -36,10 +33,19 @@ router.post("/restaurant-profile", async (req, res) => {
 router.get('/', async (req, res)=> {
     try {
         const allRestaurants = await restaurantModel.getAllRestaurants();
-        console.log(allRestaurants);
         res.status(200).json(allRestaurants);
     }catch(err){
         res.status(500).json({message: "Error fetching restaurants", error: err.message})
+    }
+});
+
+router.get('/:id', async (req, res)=> {
+    const user_id = req.body;
+    try {
+        const getDetails = await restaurantModel.getRestaurantDetail(user_id);
+        res.status(200).json(getDetails);
+    }catch(err){
+        res.status(500).json({message: "Error getting details about the restaurant", error: err.message})
     }
 });
 

@@ -1,14 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { getUserFromToken } from "../utils/tokenUtils";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
   
-  // API/DATA: Get user info from storage
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "{}"); 
-  const isRestaurant = user.role === "restaurant";
+  const user = getUserFromToken();
+  console.log(user);
+  const isRestaurant = user?.role === "restaurant";
+
+  if (token && !user) {
+    return null; 
+  }
 
   const handleLogout = () => {
     localStorage.clear();

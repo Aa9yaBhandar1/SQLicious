@@ -13,36 +13,42 @@ const createUser = async (name, email, hashedPassword, role) => {
 
 const findUserByEmail = async (email) => {
     const result = await pool.query(
-        `SELECT * FROM users WHERE email = $1`,
+        `SELECT u.*, r.restaurant_id 
+         FROM users u 
+         LEFT JOIN restaurants r ON u.user_id = r.user_id 
+         WHERE u.email = $1`,
         [email]
     );
     return result.rows[0];
-}
+};
 
 const getUserDetails = async (user_id) => {
     const result = await pool.query(
-        `SELECT u.user_id, u.name, u.email, u.role, r.address, r.contact 
+        `SELECT u.user_id, u.name, u.email, u.role, r.restaurant_id, r.address, r.contact, r.name as restaurant_name
              FROM users u 
              LEFT JOIN restaurants r ON u.user_id = r.user_id 
              WHERE u.user_id = $1`,
             [user_id]
     );
     return result.rows[0];
-}
+};
 
-const updateUserDetails = async (name,email,user_id) => {
+const findRestaurantIdByUserId = async (user_id) => {
     const result = await pool.query(
-      `
-      UPDATE users
-      SET 
-        name = COALESCE($1, name),
-        email = COALESCE($2, email)
-      WHERE user_id = $3
-      RETURNING user_id, name, email;
-      `,
+        `SELECT restaurant_id FROM restaurants WHERE user_id = $1`,
+        [user_id]
+    );
+    return result.rows[0]?.restaurant_id || null;
+};
+
+const updateUserDetails = async (name, email, user_id) => {
+    const result = await pool.query(
+      `UPDATE users
+       SET name = COALESCE($1, name), email = COALESCE($2, email)
+       WHERE user_id = $3
+       RETURNING user_id, name, email;`,
       [name, email, user_id]
     );
-
     return result.rows[0];
 };
 
@@ -52,7 +58,6 @@ const deleteUser = async (user_id) => {
             `DELETE FROM users WHERE user_id = $1 RETURNING user_id`,
             [user_id]
         );
-
         return result.rows[0] || null;
     } catch (error) {
         console.error("Error deleting user:", error);
@@ -65,5 +70,6 @@ module.exports = {
     findUserByEmail,
     updateUserDetails,
     getUserDetails,
-    deleteUser
+    deleteUser,
+    findRestaurantIdByUserId
 };

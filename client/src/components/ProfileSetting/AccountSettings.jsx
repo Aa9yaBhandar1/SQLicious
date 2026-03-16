@@ -1,12 +1,14 @@
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getUserFromToken } from "../../utils/tokenUtils";
 
 
 const AccountSettings = () => {
     const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const user_id = localStorage.getItem("user.user_id");
+  const user = getUserFromToken();
+  const user_id = user.user_id;
 
   const handleDelete = async () => {
     const loadingToast = toast.loading("Deleting your account...");
