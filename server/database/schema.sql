@@ -13,7 +13,8 @@ CREATE TABLE restaurants (
     name VARCHAR(100),
     address TEXT,
     contact BIGINT,
-    rating DECIMAL(2,1) DEFAULT 0
+    rating DECIMAL(2,1) DEFAULT 0,
+    image_url TEXT
 );
 
 -- Menu Items
@@ -22,7 +23,9 @@ CREATE TABLE menu_items (
     restaurant_id INT REFERENCES restaurants(restaurant_id),
     name VARCHAR(100),
     price DECIMAL(10,2),
-    category VARCHAR(50)
+    category VARCHAR(50),
+    available BOOLEAN DEFAULT TRUE,
+    image_url TEXT,
 );
 
 -- Orders

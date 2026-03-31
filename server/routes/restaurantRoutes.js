@@ -1,12 +1,14 @@
+require('dotenv').config();
+
 const express = require("express");
 const router = express.Router();
-require('dotenv').config();
+
 const restaurantModel = require("../models/restaurantModel");
-
-
+const cloudinary = require("../config/cloudinary");
+const upload = require("../middleware/uploadMiddleware");
 
 //setup restaurant profile 
-router.post("/restaurant-profile", async (req, res) => {
+router.post("/restaurant-profile", upload.single('image'), async (req, res) => {
     try {
         const { user_id, name, address, contact } = req.body;
 
@@ -16,7 +18,19 @@ router.post("/restaurant-profile", async (req, res) => {
             return res.status(400).json({ error: "Missing restaurant details" });
         }
 
-        const restaurant = await restaurantModel.createRestaurantProfile(user_id, name, address, contact);
+        const result = await new Promise((resolve, reject)=> {
+            cloudinary.uploader.upload_stream(
+                { folder: 'restaurants'},
+                (error, result) => {
+                    if(error) reject(error);
+                    else resolve (result);
+                }
+            ).end(req.file.buffer);
+        });
+
+        const image_url = result.secure_url;
+
+        const restaurant = await restaurantModel.createRestaurantProfile(user_id, name, address, contact, image_url);
 
         res.status(201).json({
             message: "Restaurant profile finalized!",
@@ -48,6 +62,8 @@ router.get('/:id', async (req, res)=> {
         res.status(500).json({message: "Error getting details about the restaurant", error: err.message})
     }
 });
+
+// router.post('/')
 
 
 module.exports = router;

@@ -1,6 +1,9 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
+const Multer = require("multer");
+const cloudinary = require("cloudinary").v2;
 
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/userRoutes")

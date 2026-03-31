@@ -10,12 +10,12 @@ const getMenuByRestaurant = async (restaurant_id) => {
     return result.rows;
 }
 
-const addMenuItem = async (restaurant_id, name, price, category)=> {
+const addMenuItem = async (restaurant_id, name, price, category, image_url)=> {
     const result = await pool.query(
-        `INSERT INTO menu_items (restaurant_id, name, price, category)
-        VALUES ($1, $2, $3, $4)
+        `INSERT INTO menu_items (restaurant_id, name, price, category, image_url, available)
+        VALUES ($1, $2, $3, $4, $5, TRUE)
         RETURNING *`,
-        [restaurant_id, name, price, category]
+        [restaurant_id, name, price, category, image_url]
     );
     return result.rows[0];
 }
