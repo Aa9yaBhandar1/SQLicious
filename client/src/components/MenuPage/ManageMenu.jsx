@@ -20,7 +20,6 @@ const ManageMenu = ({ restaurant_id }) => {
   }, []);
 
   const addItem = async () => {
-
     await fetch(
       `http://localhost:5000/api/restaurant/${restaurant_id}/menu`,
       {
@@ -33,10 +32,9 @@ const ManageMenu = ({ restaurant_id }) => {
     fetchMenu();
   };
 
-  const deleteItem = async (id) => {
-
+  const deleteItem = async (item_id) => {
     await fetch(
-      `http://localhost:5000/api/restaurant/menu/${id}`,
+      `http://localhost:5000/api/restaurant/menu/${item_id}`,
       { method:"DELETE" }
     );
 

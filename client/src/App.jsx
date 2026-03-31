@@ -9,6 +9,7 @@ import ProfileSetting from "./pages/ProfileSetting";
 import {Toaster} from "react-hot-toast";
 import Restaurant from "./pages/Restaurant";
 import RestaurantMenu from "./components/MenuPage/RestaurantMenu"
+import CartPage from "./pages/Cart";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/profile" element={<ProfileSetting/>} />
         <Route path="/restaurant" element={<Restaurant/>} />
         <Route path="/restaurant/:id/menu" element={<RestaurantMenu/>}/>
+        <Route path="/cart" element={<CartPage/>}/>
 
         <Route
           path="/dashboard"
