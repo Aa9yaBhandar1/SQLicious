@@ -1,44 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { getUserFromToken } from '../../utils/tokenUtils';
-import { useParams , Link} from 'react-router-dom';
-import { Plus, Minus, ShoppingCart, Loader2 } from 'lucide-react'; // Optional: install lucide-react for icons
+import { useParams, Link } from 'react-router-dom';
+import { Plus, Minus, ShoppingCart, Loader2, Filter } from 'lucide-react'; 
 
 const RestaurantMenu = () => {
-    const [menu, setMenu] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [quantities, setQuantities] = useState({}); // Track quantity per item ID
-
-    const user = getUserFromToken();
     const { id } = useParams();
-
-    const fetchMenu = async () => {
-        if (!id) return;
-        try {
-            const res = await fetch(`http://localhost:5000/api/restaurant/${id}/menu`);
-            const data = await res.json();
-            setMenu(data);
-            // Initialize quantities for each item
-            const initialQtys = {};
-            data.forEach(item => initialQtys[item.item_id] = 1);
-            setQuantities(initialQtys);
-        } catch (err) {
-            console.error("Failed to fetch menu:", err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const [menu, setMenu] = useState([]);
+    const [filteredMenu, setFilteredMenu] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [quantities, setQuantities] = useState({});
+    const [activeCategory, setActiveCategory] = useState("All");
 
     useEffect(() => {
-        if (id) fetchMenu();
+        const fetchMenu = async () => {
+            try {
+                const res = await fetch(`http://localhost:5000/api/restaurant/${id}/menu`);
+                const data = await res.json();
+                setMenu(data);
+                setFilteredMenu(data);
+                // Initialize quantities at 0
+                const initialQtys = {};
+                data.forEach(item => initialQtys[item.item_id] = 0);
+                setQuantities(initialQtys);
+            } catch (err) { console.error(err); }
+            finally { setLoading(false); }
+        };
+        fetchMenu();
     }, [id]);
 
-    const handleQuantityChange = (itemId, delta) => {
-        setQuantities(prev => ({
-            ...prev,
-            [itemId]: Math.max(1, (prev[itemId] || 1) + delta)
-        }));
+    const handleFilter = (category) => {
+        setActiveCategory(category);
+        if (category === "All") setFilteredMenu(menu);
+        else setFilteredMenu(menu.filter(item => item.category === category));
     };
 
+    const updateQty = (id, delta) => {
+        setQuantities(prev => ({ ...prev, [id]: Math.max(0, prev[id] + delta) }));
+    };
 
     const addToCart = async (item) => {
     const quantity = quantities[item.item_id];
@@ -48,7 +45,7 @@ const RestaurantMenu = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('token')}` 
             },
             body: JSON.stringify({
                 restaurant_id: id, 
@@ -64,86 +61,68 @@ const RestaurantMenu = () => {
         console.error("Cart error:", err);
     }
 };
+    const totalBill = Object.keys(quantities).reduce((sum, itemId) => {
+        const item = menu.find(i => i.item_id === parseInt(itemId));
+        return sum + (item ? item.price * quantities[itemId] : 0);
+    }, 0);
 
-    if (!user) return (
-        <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
-            <p className="text-gray-600 italic">Please log in to view the menu.</p>
-            <Link to="/sign-in" className="bg-orange-500 text-white px-6 py-2 rounded-full font-semibold">Login</Link>
-        </div>
-    );
-
-    if (loading) return (
-        <div className="flex justify-center items-center h-64 text-orange-500">
-            <Loader2 className="animate-spin w-10 h-10" />
-        </div>
-    );
+    if (loading) return <div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin text-orange-500" /></div>;
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
-            <header className="mb-8 border-b pb-4">
-                <h1 className="text-3xl font-extrabold text-gray-800">Restaurant Menu</h1>
-                <p className="text-gray-500">Fresh ingredients, delivered fast.</p>
+        <div className="max-w-6xl mx-auto p-6 pb-32">
+            <header className="mb-8">
+                <h1 className="text-3xl font-black text-gray-900">Order from Restaurant</h1>
+                {/* Category Pills */}
+                <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+                    {["All", "Starter", "Main Course", "Dessert", "Beverage"].map(cat => (
+                        <button key={cat} onClick={() => handleFilter(cat)}
+                            className={`px-4 py-1 rounded-full text-sm font-medium border transition-colors ${activeCategory === cat ? 'bg-orange-500 text-white border-orange-500' : 'bg-white text-gray-600'}`}>
+                            {cat}
+                        </button>
+                    ))}
+                </div>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {menu.length > 0 ? (
-                    menu.map((item) => (
-                        <div key={item.item_id} className="group bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
-                            {/* Placeholder for Food Image */}
-                            <div className="h-40 bg-gray-200 w-full overflow-hidden">
-                                <img 
-                                    src={`https://source.unsplash.com/400x300/?${item.name.replace(/\s/g, '')},food`} 
-                                    alt={item.name}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredMenu.map((item) => (
+                    <div key={item.item_id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+                        <img src={item.image_url} alt={item.name} className="h-48 w-full object-cover" />
+                        <div className="p-4">
+                            <div className="flex justify-between items-center mb-1">
+                                <h2 className="text-lg font-bold">{item.name}</h2>
+                                <span className="text-orange-600 font-bold">${item.price}</span>
                             </div>
+                            <p className="text-gray-400 text-xs uppercase tracking-widest mb-4">{item.category}</p>
                             
-                            <div className="p-5">
-                                <div className="flex justify-between items-start mb-2">
-                                    <h2 className="text-xl font-bold text-gray-800">{item.name}</h2>
-                                    <span className="text-xs font-bold uppercase tracking-wider bg-orange-100 text-orange-600 px-2 py-1 rounded">
-                                        {item.category}
-                                    </span>
-                                </div>
-                                <p className="text-gray-500 text-sm mb-4 line-clamp-2">Our signature {item.name.toLowerCase()} prepared with premium ingredients.</p>
-                                
-                                <div className="flex items-center justify-between mt-auto">
-                                    <span className="text-2xl font-black text-gray-900">${item.price}</span>
-                                    
-                                    {/* Quantity Selector */}
-                                    <div className="flex items-center bg-gray-100 rounded-lg p-1">
-                                        <button 
-                                            onClick={() => handleQuantityChange(item.item_id, -1)}
-                                            className="p-1 hover:bg-white rounded-md transition-colors"
-                                        >
-                                            <Minus size={16} />
-                                        </button>
-                                        <span className="mx-3 font-semibold w-4 text-center">{quantities[item.item_id]}</span>
-                                        <button 
-                                            onClick={() => handleQuantityChange(item.item_id, 1)}
-                                            className="p-1 hover:bg-white rounded-md transition-colors"
-                                        >
-                                            <Plus size={16} />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <button
+                            <div className="flex items-center justify-between bg-gray-50 p-2 rounded-xl">
+                                <button onClick={() => updateQty(item.item_id, -1)} className="p-2 hover:bg-white rounded-lg"><Minus size={18}/></button>
+                                <span className="font-bold text-xl">{quantities[item.item_id]}</span>
+                                <button onClick={() => updateQty(item.item_id, 1)} className="p-2 hover:bg-white rounded-lg text-orange-500"><Plus size={18}/></button>
+                            </div>
+                            <button
                                     onClick={() => addToCart(item)}
-                                    className="w-full mt-6 bg-orange-400 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-orange-500 transition-colors active:scale-95"
+                                    className="w-full mt-6 bg-gray-900 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-orange-500 transition-colors active:scale-95"
                                 >
                                     <ShoppingCart size={18} />
                                     Add to Cart
                                 </button>
-                            </div>
                         </div>
-                    ))
-                ) : (
-                    <div className="col-span-full text-center py-20 text-gray-400 font-medium">
-                        No items found in this menu.
                     </div>
-                )}
+                ))}
             </div>
+
+            {/* Sticky Order Summary Bar */}
+            {totalBill > 0 && (
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-black text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center animate-bounce-in">
+                    <div>
+                        <p className="text-gray-400 text-xs">Total Price</p>
+                        <p className="text-2xl font-bold">${totalBill.toFixed(2)}</p>
+                    </div>
+                    <button className="bg-orange-500 hover:bg-orange-600 px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-transform active:scale-95">
+                        <ShoppingCart size={20} /> Place Order
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

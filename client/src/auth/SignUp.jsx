@@ -21,7 +21,7 @@ const handleSubmit = async (e) => {
 
         if (data && data.user) {
             if (data.user.role === 'restaurant') {
-                navigate("/dashboard", { 
+                navigate("/restaurant-profile", { 
                     state: { user_id: data.user.user_id } 
                 });
             } else {
