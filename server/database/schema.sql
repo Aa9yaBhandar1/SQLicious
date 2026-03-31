@@ -42,3 +42,20 @@ CREATE TABLE order_items (
     item_id INT REFERENCES menu_items(item_id),
     quantity INT
 );
+
+-- Cart Table: One cart per user
+CREATE TABLE cart (
+    cart_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id) UNIQUE,
+    restaurant_id INT REFERENCES restaurants(restaurant_id), -- Keeps cart restricted to one restaurant at a time
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Cart Items: The actual food and quantities
+CREATE TABLE cart_items (
+    cart_item_id SERIAL PRIMARY KEY,
+    cart_id INT REFERENCES cart(cart_id) ON DELETE CASCADE,
+    item_id INT REFERENCES menu_items(item_id),
+    quantity INT DEFAULT 1,
+    UNIQUE(cart_id, item_id) -- Prevents duplicate rows for the same food item
+);

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const menuModel = require("../models/menuModel");
+const authorize = require("../middleware/authMiddleware");
 
 //get Menu
 router.get('/:id/menu', async (req, res)=> {
@@ -43,7 +44,7 @@ router.put('/menu/:item_id', async (req, res)=> {
 router.delete('/menu/:item_id', async (req, res)=> {
     try{
         const {item_id} = req.params;
-        const deletedItem = await menuModel.deleteMenuItem(id) 
+        const deletedItem = await menuModel.deleteMenuItem(item_id) 
         res.status(200).json({message:"Item deleted", deletedItem});
     }catch(err){
         res.status(500).json({message: "Error fetching menu", error: err.message})
