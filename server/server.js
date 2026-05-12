@@ -17,11 +17,11 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
-app.use("/api/user",userRoutes );
+app.use("/api/user", userRoutes);
 app.use("/api/restaurant", restaurantRoutes);
 app.use("/api/restaurant", menuRoutes);
 app.use("/api/cart", cartRoutes);
 
-app.listen(5000, () =>
-  console.log("Server running on port 5000")
+app.listen(5001, () =>
+  console.log("Server running on port 5001")
 );
