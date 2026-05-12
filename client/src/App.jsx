@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import SignIn from "./auth/SignIn";
-import SignUp from "./auth/SignUp";
+import MultiStepSignUp from "./auth/MultiStepSignUp";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RestaurantProfile from "./auth/RestaurantProfile";
@@ -18,7 +18,7 @@ function App() {
       <Toaster position="top-right" />
       <Routes>
         <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/sign-up" element={<MultiStepSignUp />} />
         <Route path="/restaurant-profile" element={<RestaurantProfile />} />
         <Route path="/profile" element={<ProfileSetting/>} />
         <Route path="/restaurant" element={<Restaurant/>} />

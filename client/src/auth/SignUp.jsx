@@ -1,9 +1,9 @@
-// SignUp.jsx
+// MultiStepSignUp.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authFetch from "../utils/authFetch";
 
-const SignUp = () => {
+const MultiStepSignUp = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "customer" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ const handleSubmit = async (e) => {
             }
         }
     } catch (error) {
-        console.error("Signup error:", error);
+        console.error("MultiStepSignUp error:", error);
     }
 };
 
@@ -61,4 +61,4 @@ const handleSubmit = async (e) => {
   );
 };
 
-export default SignUp;
+export default MultiStepSignUp;

@@ -20,7 +20,7 @@ const GeneralSettings = ({ user: sessionUser }) => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/user/me", {
+        const res = await fetch("http://localhost:5001/api/user/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -31,11 +31,11 @@ const GeneralSettings = ({ user: sessionUser }) => {
         if (res.ok) {
           setUserData(data.user);
           setFormData({
-          name: data.user.name || "",
-          email: data.user.email || "",
-          address: data.user.address || "",
-          contact: data.user.contact || "",
-        });
+            name: data.user.name || "",
+            email: data.user.email || "",
+            address: data.user.address || "",
+            contact: data.user.contact || "",
+          });
         } else {
           toast.error("Failed to load profile");
         }
@@ -62,7 +62,7 @@ const GeneralSettings = ({ user: sessionUser }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/user/profile-update",
+        "http://localhost:5001/api/user/profile-update",
         {
           method: "PATCH",
           headers: {

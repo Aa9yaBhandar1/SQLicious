@@ -5,49 +5,49 @@ const CartPage = () => {
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
 
-const fetchCart = async () => {
-    try {
-        const res = await fetch('http://localhost:5000/api/cart', {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-        const data = await res.json();
-        if (data && Array.isArray(data.user)) {
-            setCartItems(data.user); 
-        }        
-         else {
+    const fetchCart = async () => {
+        try {
+            const res = await fetch('http://localhost:5001/api/cart', {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            const data = await res.json();
+            if (data && Array.isArray(data.user)) {
+                setCartItems(data.user);
+            }
+            else {
+                setCartItems([]);
+            }
+        } catch (err) {
+            console.error("Error fetching cart:", err);
             setCartItems([]);
+        } finally {
+            setLoading(false);
         }
-    } catch (err) {
-        console.error("Error fetching cart:", err);
-        setCartItems([]);
-    } finally {
-        setLoading(false);
-    }
-};
+    };
 
     useEffect(() => { fetchCart(); }, []);
 
     const handleRemoveItem = async (cartItemId) => {
-    try {
-        const res = await fetch(`http://localhost:5000/api/cart/delete/${cartItemId}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
+        try {
+            const res = await fetch(`http://localhost:5001/api/cart/delete/${cartItemId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
 
-        if (res.ok) {
-            setCartItems(prev => prev.filter(item => item.cart_item_id !== cartItemId));
+            if (res.ok) {
+                setCartItems(prev => prev.filter(item => item.cart_item_id !== cartItemId));
+            }
+        } catch (err) {
+            console.error("Failed to remove item:", err);
         }
-    } catch (err) {
-        console.error("Failed to remove item:", err);
-    }
-};
+    };
 
 
-    const totalOrder = Array.isArray(cartItems) 
+    const totalOrder = Array.isArray(cartItems)
         ? cartItems.reduce((acc, item) => {
             const itemTotal = parseFloat(item.subtotal) || 0;
             return acc + itemTotal;
-        }, 0) 
+        }, 0)
         : 0;
     if (loading) return <div className="p-10 text-center text-gray-500">Loading your delicious choices...</div>;
 
@@ -85,9 +85,9 @@ const fetchCart = async () => {
                             <span className="text-xl font-medium text-gray-600">Total Amount</span>
                             <span className="text-3xl font-black text-gray-900">${totalOrder.toFixed(2)}</span>
                         </div>
-                        <button 
+                        <button
                             className="w-full bg-orange-500 text-white py-4 rounded-2xl font-bold text-lg hover:bg-orange-600 shadow-lg shadow-orange-200 transition-all active:scale-[0.98]"
-                            onClick={() => {/* Trigger Checkout Logic */}}
+                            onClick={() => {/* Trigger Checkout Logic */ }}
                         >
                             Proceed to Checkout
                         </button>

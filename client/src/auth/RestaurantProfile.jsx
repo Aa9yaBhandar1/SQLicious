@@ -7,7 +7,7 @@ const RestaurantProfile = () => {
     const navigate = useNavigate();
     const user_id = location.state?.user_id;
 
-    const [details, setDetails] = useState({ name: "", address: "", contact: "", image: ""});
+    const [details, setDetails] = useState({ name: "", address: "", contact: "", image: "" });
 
     useEffect(() => {
         if (!user_id) navigate("/sign-up");
@@ -23,7 +23,7 @@ const RestaurantProfile = () => {
         formData.append("image", details.image); // The actual file object
 
         try {
-            const res = await fetch("http://localhost:5000/api/restaurant/restaurant-profile", {
+            const res = await fetch("http://localhost:5001/api/restaurant/restaurant-profile", {
                 method: "POST",
                 body: formData
             });
@@ -40,19 +40,19 @@ const RestaurantProfile = () => {
                 {/* Profile picture */}
                 <label>Select Profile Image.</label>
                 <input type="file" name="image"
-                onChange={e => setDetails({...details, image: e.target.files[0]})} /> 
-                
+                    onChange={e => setDetails({ ...details, image: e.target.files[0] })} />
+
                 {/* Restaurant name */}
-                <input placeholder="Restaurant Name" className="w-full p-2 border rounded mb-3" required 
-                    onChange={e => setDetails({...details, name: e.target.value})} />
-                
+                <input placeholder="Restaurant Name" className="w-full p-2 border rounded mb-3" required
+                    onChange={e => setDetails({ ...details, name: e.target.value })} />
+
                 {/* Restaurant Address */}
-                <textarea placeholder="Address" className="w-full p-2 border rounded mb-3" required 
-                    onChange={e => setDetails({...details, address: e.target.value})} />
-                
+                <textarea placeholder="Address" className="w-full p-2 border rounded mb-3" required
+                    onChange={e => setDetails({ ...details, address: e.target.value })} />
+
                 {/* Restaurant contact */}
-                <input placeholder="Contact Number" className="w-full p-2 border rounded mb-6" required 
-                    onChange={e => setDetails({...details, contact: e.target.value})} />
+                <input placeholder="Contact Number" className="w-full p-2 border rounded mb-6" required
+                    onChange={e => setDetails({ ...details, contact: e.target.value })} />
                 <button className="w-full bg-orange-600 text-white py-2 rounded">Complete Registration</button>
             </form>
         </div>

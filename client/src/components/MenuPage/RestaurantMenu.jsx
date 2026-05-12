@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Plus, Minus, ShoppingCart, Loader2, Filter } from 'lucide-react'; 
+import { Plus, Minus, ShoppingCart, Loader2, Filter } from 'lucide-react';
 
 const RestaurantMenu = () => {
     const { id } = useParams();
@@ -13,7 +13,7 @@ const RestaurantMenu = () => {
     useEffect(() => {
         const fetchMenu = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/restaurant/${id}/menu`);
+                const res = await fetch(`http://localhost:5001/api/restaurant/${id}/menu`);
                 const data = await res.json();
                 setMenu(data);
                 setFilteredMenu(data);
@@ -38,29 +38,29 @@ const RestaurantMenu = () => {
     };
 
     const addToCart = async (item) => {
-    const quantity = quantities[item.item_id];
-    
-    try {
-        const response = await fetch(`http://localhost:5000/api/cart/add`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}` 
-            },
-            body: JSON.stringify({
-                restaurant_id: id, 
-                item_id: item.item_id,
-                quantity: quantity
-            })
-        });
+        const quantity = quantities[item.item_id];
 
-        if (response.ok) {
-            alert("Item added to cart!");
+        try {
+            const response = await fetch(`http://localhost:5001/api/cart/add`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    restaurant_id: id,
+                    item_id: item.item_id,
+                    quantity: quantity
+                })
+            });
+
+            if (response.ok) {
+                alert("Item added to cart!");
+            }
+        } catch (err) {
+            console.error("Cart error:", err);
         }
-    } catch (err) {
-        console.error("Cart error:", err);
-    }
-};
+    };
     const totalBill = Object.keys(quantities).reduce((sum, itemId) => {
         const item = menu.find(i => i.item_id === parseInt(itemId));
         return sum + (item ? item.price * quantities[itemId] : 0);
@@ -93,19 +93,19 @@ const RestaurantMenu = () => {
                                 <span className="text-orange-600 font-bold">${item.price}</span>
                             </div>
                             <p className="text-gray-400 text-xs uppercase tracking-widest mb-4">{item.category}</p>
-                            
+
                             <div className="flex items-center justify-between bg-gray-50 p-2 rounded-xl">
-                                <button onClick={() => updateQty(item.item_id, -1)} className="p-2 hover:bg-white rounded-lg"><Minus size={18}/></button>
+                                <button onClick={() => updateQty(item.item_id, -1)} className="p-2 hover:bg-white rounded-lg"><Minus size={18} /></button>
                                 <span className="font-bold text-xl">{quantities[item.item_id]}</span>
-                                <button onClick={() => updateQty(item.item_id, 1)} className="p-2 hover:bg-white rounded-lg text-orange-500"><Plus size={18}/></button>
+                                <button onClick={() => updateQty(item.item_id, 1)} className="p-2 hover:bg-white rounded-lg text-orange-500"><Plus size={18} /></button>
                             </div>
                             <button
-                                    onClick={() => addToCart(item)}
-                                    className="w-full mt-6 bg-gray-900 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-orange-500 transition-colors active:scale-95"
-                                >
-                                    <ShoppingCart size={18} />
-                                    Add to Cart
-                                </button>
+                                onClick={() => addToCart(item)}
+                                className="w-full mt-6 bg-gray-900 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-orange-500 transition-colors active:scale-95"
+                            >
+                                <ShoppingCart size={18} />
+                                Add to Cart
+                            </button>
                         </div>
                     </div>
                 ))}

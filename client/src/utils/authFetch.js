@@ -8,7 +8,7 @@ const authFetch = async (url, options = {}) => {
   };
 
   const response = await fetch(
-    `http://localhost:5000/api${url}`,
+    `http://localhost:5001/api${url}`,
     { ...options, headers }
   );
 

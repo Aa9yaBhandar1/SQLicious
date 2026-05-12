@@ -5,7 +5,7 @@ import { getUserFromToken } from "../../utils/tokenUtils";
 
 
 const AccountSettings = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const user = getUserFromToken();
   const user_id = user.user_id;
@@ -15,7 +15,7 @@ const AccountSettings = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/user/delete/${user_id}`,
+        `http://localhost:5001/api/user/delete/${user_id}`,
         {
           method: "DELETE",
           headers: {

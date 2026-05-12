@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 const RestaurantCard = ({ restaurant }) => {
   const navigate = useNavigate();
   return (
-    <div 
-    onClick={()=> navigate(`/restaurant/${restaurant.restaurant_id}/menu`)}
-    className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden cursor-pointer group">
+    <div
+      onClick={() => navigate(`/restaurant/${restaurant.restaurant_id}/menu`)}
+      className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden cursor-pointer group">
 
       {/* Image */}
       <div className="relative h-48 w-full overflow-hidden">
@@ -51,7 +51,7 @@ const Restaurant = () => {
 
   useEffect(() => {
     const getRestaurants = async () => {
-      const response = await fetch("http://localhost:5000/api/restaurant/");
+      const response = await fetch("http://localhost:5001/api/restaurant/");
       const data = await response.json();
       setRestaurants(data);
     };
