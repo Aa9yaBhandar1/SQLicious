@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 const pool = require('../config/db');
 
-
 const userModel = require("../models/userModel");
 const verifyToken = require("../middleware/authMiddleware");
 const authorize = require("../middleware/roleMiddleware");
@@ -13,30 +12,6 @@ const authorize = require("../middleware/roleMiddleware");
 const restaurantModel = require("../models/restaurantModel");
 const cloudinary = require("../config/cloudinary");
 const upload = require("../middleware/uploadMiddleware");
-
-router.post("/sign-up", async (req, res) => {
-    try {
-        const { name, email, password, role } = req.body;
-
-        if (!name || !email || !password || !role) {
-            return res.status(400).json({ error: "All fields are required" });
-        }
-
-        const existingUser = await userModel.findUserByEmail(email);
-        if (existingUser) {
-            return res.status(409).json({ error: "Email already registered" });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await userModel.createUser(name, email, hashedPassword, role);
-        res.status(201).json({
-            message: "User registered successfully",
-            user: { user_id: user.user_id, role: user.role, name: user.name }
-        });
-    } catch (err) {
-        res.status(500).json({ error: "Server error during registration", details: err.message });
-    }
-});
 
 //Sign In
 router.post("/sign-in", async (req, res) => {
@@ -70,7 +45,7 @@ router.post("/sign-in", async (req, res) => {
 
 
 router.post("/register-full", upload.single('image'), async (req, res) => {
-    // 1. Get a client from the pool to handle the transaction
+    // Get a client from the pool to handle the transaction
     const client = await pool.connect();
     
     try {
@@ -84,19 +59,18 @@ router.post("/register-full", upload.single('image'), async (req, res) => {
         // Start Transaction
         await client.query('BEGIN');
 
-        // 2. Check if user exists
+        // Check if user exists
         const existingUser = await userModel.findUserByEmail(email);
         if (existingUser) {
             await client.query('ROLLBACK');
             return res.status(409).json({ error: "Email already registered" });
         }
 
-        // 3. Create the User
+        //  Create the User
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await userModel.createUser(name, email, hashedPassword, role, client); 
-        // Note: Pass the 'client' to your model so it uses the transaction!
 
-        // 4. If Restaurant, handle Profile and Image
+        //  If Restaurant, handle Profile and Image
         if (role === 'restaurant') {
             if (!resName || !address || !contact || !req.file) {
                 throw new Error("Missing restaurant profile details or image");
@@ -126,7 +100,7 @@ router.post("/register-full", upload.single('image'), async (req, res) => {
             );
         }
 
-        // 5. Commit everything if we got this far
+        //  Commit everything if we got this far
         await client.query('COMMIT');
 
         res.status(201).json({
@@ -135,7 +109,7 @@ router.post("/register-full", upload.single('image'), async (req, res) => {
         });
 
     } catch (err) {
-        // 6. Rollback if ANY error occurs (User won't be created)
+        //  Rollback if ANY error occurs (User won't be created)
         await client.query('ROLLBACK');
         console.error("REGISTRATION ERROR:", err.message);
         res.status(500).json({ error: "Registration failed", details: err.message });
